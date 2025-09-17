@@ -65,6 +65,20 @@ function PLUGIN:PostInstall(ctx)
         os.execute('chmod +x "' .. dest .. '"')
     end
 
+    -- Ensure adapter can find bundled LLDB libs at '<install>/lldb/lib'.
+    -- VSIX bundles them under 'extension/lldb', so create a symlink for Unix.
+    -- On Windows, the adapter finds DLLs alongside the executable.
+    if RUNTIME.osType ~= "Windows" then
+        local lldb_src_dir = path .. "/extension/lldb"
+        local lldb_dest_dir = path .. "/lldb"
+        -- Try to create/refresh a symlink. If it fails, fall back to copying.
+        local link_ok = os.execute("ln -sfn '" .. lldb_src_dir .. "' '" .. lldb_dest_dir .. "'")
+        if link_ok ~= 0 then
+            os.execute("rm -rf '" .. lldb_dest_dir .. "' 2>/dev/null || true")
+            os.execute("cp -a '" .. lldb_src_dir .. "' '" .. lldb_dest_dir .. "'")
+        end
+    end
+
     -- Quick sanity check: print --help (adapter supports it)
     os.execute(dest .. " --help > /dev/null 2>&1")
 end

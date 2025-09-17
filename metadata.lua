@@ -1,4 +1,4 @@
-PLUGIN = { -- luacheck: ignore
+PLUGIN = {
     name = "codelldb",
     version = "1.0.0",
     description = "Installs the CodeLLDB debug adapter (vadimcn/codelldb)",
