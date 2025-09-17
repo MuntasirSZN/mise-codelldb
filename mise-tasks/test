@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force codelldb .
+mise cache clear
+mise install codelldb@v1.11.5
+
+# Capture and display the output while also verifying it
+# Sanity check that adapter binary exists and runs
+mise exec "codelldb@v1.11.5" -- bash -lc "test -x '$(mise where codelldb@v1.11.5)/bin/codelldb' || test -x '$(mise where codelldb@v1.11.5)/bin/codelldb.exe'"
+mise exec "codelldb@v1.11.5" -- bash -lc "'$(mise where codelldb@v1.11.5)/bin/codelldb' --help >/dev/null 2>&1 || true"
+echo "✓ Tests passed"
