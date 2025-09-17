@@ -1,10 +1,9 @@
--- luacheck:ignore
-local RUNTIME
-
 function PLUGIN:PreInstall(ctx)
     local version = ctx.version
 
+    -- luacheck:ignore
     local os_name = RUNTIME.osType:lower()
+    -- luacheck:ignore
     local arch = RUNTIME.archType
 
     -- Map to codelldb VSIX filenames

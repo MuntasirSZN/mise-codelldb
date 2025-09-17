@@ -1,6 +1,3 @@
--- luacheck:ignore
-local RUNTIME
-
 function PLUGIN:PostInstall(ctx)
     local sdkInfo = ctx.sdkInfo[PLUGIN.name]
     local path = sdkInfo.path
@@ -8,6 +5,7 @@ function PLUGIN:PostInstall(ctx)
     -- VSIX was downloaded; mise extracts archives automatically.
     -- CodeLLDB's adapter binary lives at extension/adapter/codelldb[.exe].
     local adapter_rel = "extension/adapter/codelldb"
+    -- luacheck:ignore
     if RUNTIME.osType == "Windows" then
         adapter_rel = adapter_rel .. ".exe"
     end
@@ -15,6 +13,7 @@ function PLUGIN:PostInstall(ctx)
     local src = path .. "/" .. adapter_rel
     local bin_dir = path .. "/bin"
     local dest = bin_dir .. "/codelldb"
+    -- luacheck:ignore
     if RUNTIME.osType == "Windows" then
         dest = dest .. ".exe"
     end
@@ -39,6 +38,7 @@ function PLUGIN:PostInstall(ctx)
         end
         if vsix and vsix ~= "" then
             local vsix_path = path .. "/" .. vsix
+            -- luacheck:ignore
             if RUNTIME.osType == "Windows" then
                 os.execute(
                     "powershell -NoProfile -Command \"Expand-Archive -Path '"
@@ -60,6 +60,7 @@ function PLUGIN:PostInstall(ctx)
 
     os.execute("mkdir -p " .. bin_dir)
     os.execute('cp "' .. src .. '" "' .. dest .. '"')
+    -- luacheck:ignore
     if RUNTIME.osType ~= "Windows" then
         os.execute('chmod +x "' .. dest .. '"')
     end
