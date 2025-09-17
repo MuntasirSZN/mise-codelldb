@@ -4,13 +4,22 @@ Mise plugin to install the CodeLLDB debug adapter (vadimcn/codelldb) across plat
 
 ## Install
 
-- Link locally for development:
+- Using git:
+
+```sh
+mise plugin install codelldb https://github.com/MuntasirSZN/mise-codelldb
+
+# Install specific version
+mise plugin install codelldb https://github.com/MuntasirSZN/mise-codelldb@v1.0.0
 ```
+
+- Link locally for development:
+```sh
 mise plugin link --force codelldb .
 ```
 
 - Install a specific version (use Git tags like `v1.11.5`):
-```
+```sh
 mise install codelldb@v1.11.5
 ```
 
@@ -20,10 +29,6 @@ This downloads the appropriate VSIX for your platform and exposes the adapter at
 
 - Versions come from GitHub tags on `vadimcn/codelldb`.
 - The plugin selects the correct VSIX based on OS/arch, downloads it, and extracts the adapter binary.
-- Supported assets:
-  - Linux: `codelldb-x86_64-linux.vsix`, `codelldb-aarch64-linux.vsix`, `codelldb-arm-linux.vsix`
-  - macOS: `codelldb-x86_64-darwin.vsix`, `codelldb-aarch64-darwin.vsix`
-  - Windows: `codelldb-x86_64-windows.vsix`
 
 ## Development
 
