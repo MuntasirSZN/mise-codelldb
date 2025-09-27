@@ -29,10 +29,18 @@ function PLUGIN:PreInstall(ctx)
     end
 
     local base = "https://github.com/vadimcn/codelldb/releases/download/" .. version .. "/"
+
+    local headers = {}
+    if os.getenv("GITHUB_TOKEN") then
+        headers["Authorization"] = "token " .. os.getenv("GITHUB_TOKEN")
+    elseif os.getenv("GITHUB_API_TOKEN") then
+        headers["Authorization"] = "token " .. os.getenv("GITHUB_API_TOKEN")
+    end
+
     local chosen
     for _, file in ipairs(candidates) do
         local url = base .. file
-        local resp = select(1, http.get({ url = url }))
+        local resp = select(1, http.get({ url = url, headers = headers }))
         if resp and resp.status_code == 200 then
             chosen = file
             break

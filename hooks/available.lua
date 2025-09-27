@@ -1,4 +1,3 @@
--- cache versions for 12 hours
 local __cache = { versions = nil, ts = 0 }
 local __ttl = 12 * 60 * 60
 
@@ -12,7 +11,15 @@ function PLUGIN:Available()
     local json = require("json")
 
     local repo_url = "https://api.github.com/repos/vadimcn/codelldb/tags"
-    local resp, err = http.get({ url = repo_url })
+
+    local headers = {}
+    if os.getenv("GITHUB_TOKEN") then
+        headers["Authorization"] = "token " .. os.getenv("GITHUB_TOKEN")
+    elseif os.getenv("GITHUB_API_TOKEN") then
+        headers["Authorization"] = "token " .. os.getenv("GITHUB_API_TOKEN")
+    end
+
+    local resp, err = http.get({ url = repo_url, headers = headers })
     if err ~= nil then
         error("codelldb: failed to fetch tags: " .. err)
     end

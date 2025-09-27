@@ -2,10 +2,7 @@ function PLUGIN:PostInstall(ctx)
     local sdkInfo = ctx.sdkInfo[PLUGIN.name]
     local path = sdkInfo.path
 
-    -- VSIX was downloaded; mise extracts archives automatically.
-    -- CodeLLDB's adapter binary lives at extension/adapter/codelldb[.exe].
     local adapter_rel = "extension/adapter/codelldb"
-    -- luacheck:ignore
     if RUNTIME.osType == "Windows" then
         adapter_rel = adapter_rel .. ".exe"
     end
@@ -13,7 +10,6 @@ function PLUGIN:PostInstall(ctx)
     local src = path .. "/" .. adapter_rel
     local bin_dir = path .. "/bin"
     local dest = bin_dir .. "/codelldb"
-    -- luacheck:ignore
     if RUNTIME.osType == "Windows" then
         dest = dest .. ".exe"
     end
@@ -38,7 +34,6 @@ function PLUGIN:PostInstall(ctx)
         end
         if vsix and vsix ~= "" then
             local vsix_path = path .. "/" .. vsix
-            -- luacheck:ignore
             if RUNTIME.osType == "Windows" then
                 os.execute(
                     "powershell -NoProfile -Command \"Expand-Archive -Path '"
@@ -59,10 +54,19 @@ function PLUGIN:PostInstall(ctx)
     end
 
     os.execute("mkdir -p " .. bin_dir)
-    os.execute('cp "' .. src .. '" "' .. dest .. '"')
-    -- luacheck:ignore
+    -- Instead of copying the adapter, create a wrapper that calls the original
     if RUNTIME.osType ~= "Windows" then
+        local f = assert(io.open(dest, "w"))
+        f:write("#!/usr/bin/env bash\n")
+        f:write('exec "' .. src .. '" "$@"\n')
+        f:close()
         os.execute('chmod +x "' .. dest .. '"')
+    else
+        local wrapper = bin_dir .. "/codelldb.cmd"
+        local f = assert(io.open(wrapper, "w"))
+        f:write("@echo off\r\n")
+        f:write('"' .. src .. '" %*\r\n')
+        f:close()
     end
 
     -- Ensure adapter can find bundled LLDB libs at '<install>/lldb/lib'.
@@ -79,6 +83,8 @@ function PLUGIN:PostInstall(ctx)
         end
     end
 
-    -- Quick sanity check: print --help (adapter supports it)
-    os.execute(dest .. " --help > /dev/null 2>&1")
+    -- Quick sanity check against the real adapter
+    if RUNTIME.osType ~= "Windows" then
+        os.execute('"' .. src .. '" --help > /dev/null 2>&1')
+    end
 end
