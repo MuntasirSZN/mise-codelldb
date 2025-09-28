@@ -1,6 +1,6 @@
-PLUGIN = {
+PLUGIN = { -- luacheck:ignore
     name = "codelldb",
-    version = "1.0.0",
+    version = "1.0.3",
     description = "Installs the CodeLLDB debug adapter (vadimcn/codelldb)",
     author = "muntasir",
     updateUrl = "https://github.com/muntasir/mise-codelldb",
