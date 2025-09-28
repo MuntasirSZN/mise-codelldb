@@ -1,10 +1,11 @@
-local __cache = { versions = nil, ts = 0 }
-local __ttl = 12 * 60 * 60
+local cache = { versions = nil, timestamp = 0 }
+local cache_ttl = 12 * 60 * 60
 
 function PLUGIN:Available()
     local now = os.time()
-    if __cache.versions and (now - (__cache.ts or 0)) < __ttl then
-        return __cache.versions
+
+    if cache.versions and cache.timestamp and (now - cache.timestamp) < cache_ttl then
+        return cache.versions
     end
 
     local http = require("http")
@@ -41,7 +42,7 @@ function PLUGIN:Available()
         table.insert(result, { version = v, note = note })
     end
 
-    __cache.versions = result
-    __cache.ts = now
+    cache.versions = result
+    cache.timestamp = now
     return result
 end
