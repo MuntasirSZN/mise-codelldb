@@ -10,7 +10,7 @@ Mise plugin to install the CodeLLDB debug adapter (vadimcn/codelldb) across plat
 mise plugin install codelldb https://github.com/MuntasirSZN/mise-codelldb
 
 # Install specific version
-mise plugin install codelldb https://github.com/MuntasirSZN/mise-codelldb@v1.0.0
+mise plugin install codelldb https://github.com/MuntasirSZN/mise-codelldb@v1.0.3
 ```
 
 - Link locally for development:
